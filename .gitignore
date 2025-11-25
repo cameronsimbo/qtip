@@ -1,2 +1,32 @@
 .vs/
+bin/
+obj/
+
+# Build outputs
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# IDE settings
+.idea/
+.vscode/
+
+# Node / frontend
+node_modules/
+.next/
+out/
+dist/
+
+# Environment / secrets
+.env
+.env.*
 
