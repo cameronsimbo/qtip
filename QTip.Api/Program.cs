@@ -49,6 +49,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Ensure database is created with the current schema.
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
