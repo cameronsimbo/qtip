@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: qtip-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "qtip"
+      POSTGRES_PASSWORD: "qtip"
+      POSTGRES_DB: "qtip"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qtip -d qtip"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: QTip.Api/Dockerfile
+    container_name: qtip-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=qtip;Username=qtip;Password=qtip"
+    ports:
+      - "5000:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qtip-frontend
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+    driver: local
+
+
