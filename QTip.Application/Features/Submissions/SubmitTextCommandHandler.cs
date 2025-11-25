@@ -1,4 +1,5 @@
 using System.Text;
+using FluentValidation;
 using MediatR;
 using QTip.Application.Abstractions;
 using QTip.Application.Common;
@@ -11,19 +12,24 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
     private readonly IApplicationDbContext _dbContext;
     private readonly IEmailDetectionService _emailDetectionService;
     private readonly ITokenGenerator _tokenGenerator;
+    private readonly IValidator<SubmitTextCommand> _validator;
 
     public SubmitTextCommandHandler(
         IApplicationDbContext dbContext,
         IEmailDetectionService emailDetectionService,
-        ITokenGenerator tokenGenerator)
+        ITokenGenerator tokenGenerator,
+        IValidator<SubmitTextCommand> validator)
     {
         _dbContext = dbContext;
         _emailDetectionService = emailDetectionService;
         _tokenGenerator = tokenGenerator;
+        _validator = validator;
     }
 
     public async Task<SubmitTextResult> Handle(SubmitTextCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request, cancellationToken);
+
         var text = request.Text;
 
         var detectedEmails = _emailDetectionService
