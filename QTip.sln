@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "QTip.Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "QTip.Api\Api.csproj", "{E3C39C99-79F6-46D5-B515-D2048C93102E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QTip.Tests", "QTip.Tests\QTip.Tests.csproj", "{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{E3C39C99-79F6-46D5-B515-D2048C93102E}.Release|x64.Build.0 = Release|Any CPU
 		{E3C39C99-79F6-46D5-B515-D2048C93102E}.Release|x86.ActiveCfg = Release|Any CPU
 		{E3C39C99-79F6-46D5-B515-D2048C93102E}.Release|x86.Build.0 = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|x64.Build.0 = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Debug|x86.Build.0 = Debug|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|x64.ActiveCfg = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|x64.Build.0 = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|x86.ActiveCfg = Release|Any CPU
+		{4EF4B19D-E0E3-4A84-8861-FE3C5D373D15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
