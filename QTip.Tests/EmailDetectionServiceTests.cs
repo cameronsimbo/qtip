@@ -29,5 +29,3 @@ public class EmailDetectionServiceTests
         Assert.Equal("jane@test.org", result[1].Value);
     }
 }
-
-

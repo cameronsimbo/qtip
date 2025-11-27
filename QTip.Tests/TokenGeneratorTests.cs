@@ -29,5 +29,3 @@ public class TokenGeneratorTests
         Assert.NotEqual(first, second);
     }
 }
-
-
