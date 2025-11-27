@@ -23,7 +23,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(IApplicationDbContext).Assembl
 
 // DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                      ?? builder.Configuration["QTIP_CONNECTION_STRING"];
+                      ?? builder.Configuration["QTIP_CONNECTION_STRING"]
+                      ?? "Host=localhost;Port=5432;Database=qtip;Username=qtip;Password=qtip";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
