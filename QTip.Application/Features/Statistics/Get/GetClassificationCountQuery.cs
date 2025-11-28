@@ -13,4 +13,3 @@ public sealed record GetClassificationCountResult(
     long LastSubmissionFinanceIbans,
     long LastSubmissionPiiPhones,
     long LastSubmissionSecurityTokens);
-
