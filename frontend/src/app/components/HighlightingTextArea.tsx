@@ -1,4 +1,4 @@
-import { JSX, useMemo } from "react";
+import { JSX, useMemo, useRef } from "react";
 
 type HighlightKind = "text" | "email" | "iban" | "phone" | "token";
 type HighlightDataKind = Exclude<HighlightKind, "text">;
@@ -157,6 +157,7 @@ export function HighlightingTextArea(
   props: HighlightingTextAreaProps,
 ): JSX.Element {
   const { value, onChange, placeholder } = props;
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const segments = useMemo(() => buildHighlightSegments(value), [value]);
   const highlightedContent = useMemo(
@@ -164,17 +165,25 @@ export function HighlightingTextArea(
     [segments],
   );
 
+  const handleOverlayClick = (): void => {
+    if (textareaRef.current !== null) {
+      textareaRef.current.focus();
+    }
+  };
+
   return (
     <div className="relative h-64 w-full">
       <div
-        className="pointer-events-none absolute inset-0 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+        className="absolute inset-0 z-20 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm"
         aria-hidden="true"
+        onClick={handleOverlayClick}
       >
-        <div className="text-slate-900">{highlightedContent}</div>
+        <div className="text-transparent">{highlightedContent}</div>
       </div>
 
       <textarea
-        className="absolute inset-0 h-full w-full resize-none rounded-md border-none bg-transparent px-3 py-2 text-sm text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+        className="absolute inset-0 z-10 h-full w-full resize-none rounded-md border-none bg-transparent px-3 py-2 text-sm text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+        ref={textareaRef}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}

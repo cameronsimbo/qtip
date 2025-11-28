@@ -25,6 +25,9 @@ docker compose up --build
   - PostgreSQL database: internal service `db` on port `5432` with database `qtip`, user `qtip`, password `qtip`
 - Open the UI at `http://localhost:3000`, paste some text with emails, and submit. The stats panel will show `Total PII emails submitted: X` aggregated from the backend.
 
+**Troubleshooting port conflicts**: If you get "ports are not available" errors (e.g., port 5432 already in use):
+- Stop your local PostgreSQL service (`sudo systemctl stop postgresql` on Linux)
+
 </details>
 
 <details>
@@ -59,7 +62,7 @@ dotnet run
 
 The API listens on `http://localhost:5001`.
 
-5. **Run the frontend**
+4. **Run the frontend**
 
 Create or update `frontend/.env.local`:
 
