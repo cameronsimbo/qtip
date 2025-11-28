@@ -15,6 +15,7 @@ type StatsResponse = {
 };
 
 type HighlightKind = "text" | "email" | "iban" | "phone" | "token";
+type HighlightDataKind = Exclude<HighlightKind, "text">;
 
 type HighlightSegment =
   | { kind: "text"; value: string }
@@ -116,6 +117,20 @@ function buildHighlightSegments(text: string): HighlightSegment[] {
 function renderSegments(segments: HighlightSegment[]): JSX.Element[] {
   const elements: JSX.Element[] = [];
 
+  const styleByKind: Record<HighlightDataKind, string> = {
+    email: "underline decoration-wavy decoration-red-500",
+    iban: "underline decoration-wavy decoration-emerald-500",
+    phone: "underline decoration-wavy decoration-blue-500",
+    token: "underline decoration-wavy decoration-yellow-500",
+  };
+
+  const titleByKind: Record<HighlightDataKind, string> = {
+    email: "PII – Email Address",
+    iban: "Finance – IBAN Number",
+    phone: "PII – Phone Number",
+    token: "Security – Token",
+  };
+
   segments.forEach((segment, segmentIndex) => {
     const keyPrefix = `segment-${segmentIndex}-`;
 
@@ -132,63 +147,18 @@ function renderSegments(segments: HighlightSegment[]): JSX.Element[] {
           elements.push(<br key={`${keyPrefix}br-${index}`} />);
         }
       });
-    } else {
-      const styleByKind: Record<Exclude<HighlightKind, "text">, string> = {
-        email: "underline decoration-wavy decoration-red-500",
-        iban: "underline decoration-wavy decoration-emerald-500",
-        phone: "underline decoration-wavy decoration-blue-500",
-        token: "underline decoration-wavy decoration-yellow-500",
-      };
-
-      const titleByKind: Record<Exclude<HighlightKind, "text">, string> = {
-        email: "PII – Email Address",
-        iban: "Finance – IBAN Number",
-        phone: "PII – Phone Number",
-        token: "Security – Token",
-      };
-
-      if (segment.kind === "email") {
-        elements.push(
-          <span
-            key={`${keyPrefix}email`}
-            className={styleByKind.email}
-            title={titleByKind.email}
-          >
-            {segment.value}
-          </span>
-        );
-      } else if (segment.kind === "iban") {
-        elements.push(
-          <span
-            key={`${keyPrefix}iban`}
-            className={styleByKind.iban}
-            title={titleByKind.iban}
-          >
-            {segment.value}
-          </span>
-        );
-      } else if (segment.kind === "phone") {
-        elements.push(
-          <span
-            key={`${keyPrefix}phone`}
-            className={styleByKind.phone}
-            title={titleByKind.phone}
-          >
-            {segment.value}
-          </span>
-        );
-      } else if (segment.kind === "token") {
-        elements.push(
-          <span
-            key={`${keyPrefix}token`}
-            className={styleByKind.token}
-            title={titleByKind.token}
-          >
-            {segment.value}
-          </span>
-        );
-      }
+      return;
     }
+
+    const kind: HighlightDataKind = segment.kind;
+    const style = styleByKind[kind];
+    const title = titleByKind[kind];
+
+    elements.push(
+      <span key={`${keyPrefix}${kind}`} className={style} title={title}>
+        {segment.value}
+      </span>
+    );
   });
 
   return elements;
@@ -288,16 +258,16 @@ export default function Home(): JSX.Element {
 
         <section>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="relative">
+            <div className="relative h-64 w-full">
               <div
-                className="pointer-events-none absolute inset-0 whitespace-pre-wrap rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-transparent"
+                className="pointer-events-none absolute inset-0 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
                 aria-hidden="true"
               >
                 <div className="text-slate-900">{highlightedContent}</div>
               </div>
 
               <textarea
-                className="relative h-64 w-full resize-none rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+                className="absolute inset-0 h-full w-full resize-none rounded-md border-none bg-transparent px-3 py-2 text-sm text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                 value={text}
                 onChange={(event) => setText(event.target.value)}
                 placeholder="Type or paste text containing email addresses..."
