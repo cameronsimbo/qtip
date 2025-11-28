@@ -171,6 +171,12 @@ export function HighlightingTextArea(
     [segments],
   );
 
+  const handleWrapperClick = (): void => {
+    if (textareaRef.current !== null) {
+      textareaRef.current.focus();
+    }
+  };
+
   const handleTextareaScroll = (): void => {
     if (isSyncingScrollRef.current) {
       return;
@@ -186,9 +192,12 @@ export function HighlightingTextArea(
   };
 
   return (
-    <div className="relative h-64 w-full">
+    <div
+      className="relative h-64 w-full rounded-md border border-slate-300 bg-white"
+      onClick={handleWrapperClick}
+    >
       <div
-        className="pointer-events-none absolute inset-0 z-20 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm"
+        className="pointer-events-none absolute inset-0 z-20 overflow-hidden whitespace-pre-wrap px-3 py-2 text-sm"
         aria-hidden="true"
         ref={overlayRef}
       >
