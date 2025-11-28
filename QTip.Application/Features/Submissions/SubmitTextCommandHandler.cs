@@ -2,8 +2,8 @@ using System.Text;
 using FluentValidation;
 using MediatR;
 using QTip.Application.Abstractions;
-using QTip.Application.Common;
 using QTip.Domain.Entities;
+using QTip.Domain.Enums;
 
 namespace QTip.Application.Features.Submissions;
 
@@ -73,7 +73,7 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
                 SubmissionId = submissionId,
                 Token = token,
                 OriginalValue = email.Value,
-                Tag = PiiTags.PiiEmailTag,
+                Tag = PiiTag.PiiEmail.GetDescription(),
                 CreatedAtUtc = DateTime.UtcNow
             });
 

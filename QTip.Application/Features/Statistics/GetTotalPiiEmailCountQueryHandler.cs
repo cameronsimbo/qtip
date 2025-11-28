@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QTip.Application.Abstractions;
-using QTip.Application.Common;
+using QTip.Domain.Enums;
 
 namespace QTip.Application.Features.Statistics;
 
@@ -20,7 +20,7 @@ public sealed class GetTotalPiiEmailCountQueryHandler
         CancellationToken cancellationToken)
     {
         long count = await _dbContext.ClassificationRecords
-            .Where(x => x.Tag == PiiTags.PiiEmailTag)
+            .Where(x => x.Tag == PiiTag.PiiEmail.GetDescription())
             .LongCountAsync(cancellationToken);
 
         return new GetTotalPiiEmailCountResult(count);
