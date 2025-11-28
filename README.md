@@ -81,7 +81,7 @@ Open `http://localhost:3000` in your browser.
 
 ---
 
-## My Thought Process and How I Approach the Problem
+## My thought process and how I approached the problem
 
 <details>
 <summary>My thought process and how I approached the problem</summary>
@@ -89,12 +89,12 @@ Open `http://localhost:3000` in your browser.
 <br />
 
 - **Bootstrap with AI for the heavy lifting**
-  - I used Cursor with ChatGPT 5.1 to generate the initial solution skeleton because the setup (four .NET projects, Next.js app, Docker, EF Core, MediatR, FluentValidation, PostgreSQL wiring) is boilerplate heavy and time consuming.
+  - I used AI to help generate the initial solution skeleton because the setup (four .NET projects, Next.js app, Docker, EF Core, MediatR, FluentValidation, PostgreSQL wiring) is boilerplate heavy and time consuming.
   - AI helped me quickly wire up the core dependencies and project structure so I could spend more time on design, domain decisions, and polishing the implementation.
 
-- **Move into a test‑driven, iterative workflow**
+- **Move into a test driven, iterative workflow**
   - Once the skeleton was in place, I followed a test driven style of working: write small focused tests, make them pass, then refactor.
-  - I started with a simple email detection service, added tests early, and reused those tests as I refactored to catch regressions in the detection and tokenization pipeline.
+  - I started with a simple email detection service, added tests early, and reused those tests as I refactored to catch regressions in the detection pipeline.
 
 - **Evolve the design step by step**
   - I iterated on the architecture by:
@@ -103,36 +103,36 @@ Open `http://localhost:3000` in your browser.
     - Refining logic in the MediatR handlers so that tokenization, persistence, and statistics were easy to understand and extend.
 
 - **Extend beyond email and polish the UX**
-  - After the email‑only version was stable, I implemented the optional extension with additional tags (phone numbers, IBANs, and security‑style tokens) using straightforward regex patterns.
+  - After the email only version was stable, I implemented the optional extension with additional tags (phone numbers, IBANs, and security style tokens) using straightforward regex patterns.
   - I then added small UX improvements: a richer stats panel that shows both totals and last submission counts, and a clear stats button so it is easy to reset and re exercise the system.
 
 </details>
 
 ---
 
-## Trade‑offs and decisions made
+## Trade offs and decisions made
 
 <details>
 <summary>Trade offs and decisions made</summary>
 
 <br />
 
-### 1. EF Core code‑first with `EnsureCreated` (no migrations checked in)
+### 1. EF Core code first with `EnsureCreated` (no migrations checked in)
 
-- **Decision**: Use EF Core’s code‑first model and `Database.EnsureCreated()` at startup instead of maintaining explicit migrations in this repo.  
+- **Decision**: Use EF Core’s code first model and `Database.EnsureCreated()` at startup instead of maintaining explicit migrations in this repo.  
 - **Reasoning**: For a small challenge with a simple schema, this keeps setup and maintenance very light while still giving a real relational database and clear schema.  
-- **Trade‑off**: This approach is not ideal for production schema evolution, but it is acceptable  for this tech test.
+- **Trade off**: This approach is not ideal for production schema evolution, but it is acceptable  for this tech test.
 
-### 2. From email‑only detection to a generalized classification service
+### 2. From email only detection to a generalized classification service
 
-- **Decision**: Start with a dedicated `IEmailDetectionService` and later evolve to a single `IClassificationDetectionService` that detects multiple configured types (email, IBAN, phone, tokens) using regex patterns and enum‑backed tags.  
+- **Decision**: Start with a dedicated `IEmailDetectionService` and later evolve to a single `IClassificationDetectionService` that detects multiple configured types (email, IBAN, phone, tokens) using regex patterns and enum backed tags.  
 - **Reasoning**: Beginning with email only kept the initial pipeline simple and easy to validate; once that was correct, it was generalized to support additional classification types without changing the controller or command.
 
-### 3. Regex‑based detection for all types
+### 3. Regex based detection for all types
 
 - **Decision**: Use simple regexes for email, IBAN, phone, and tokens instead of external libraries or strict format validators.  
 - **Reasoning**: Regex is sufficient here to demonstrate detection behavior and tokenization, and keeps the implementation easy to understand and adjust.  
-- **Trade‑off**: Patterns are deliberately simplified; they may miss some valid real‑world formats or match slightly more than a production grade validator would.
+- **Trade off**: Patterns are deliberately simplified; they may miss some valid real world formats or match slightly more than a production grade validator would.
 
 </details>
 
