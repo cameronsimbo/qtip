@@ -185,3 +185,8 @@ Open `http://localhost:3000` in your browser.
   - Add more classification types as needed (e.g., national IDs).
 
 </details>
+
+## Screenshot of UI
+
+<img width="1221" height="972" alt="image" src="https://github.com/user-attachments/assets/8a1210e5-d929-47d2-b628-c8ab07048162" />
+
