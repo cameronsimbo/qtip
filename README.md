@@ -108,6 +108,7 @@ Open `http://localhost:3000` in your browser.
 - **Extend beyond email and polish the UX**
   - After the email only version was stable, I implemented the optional extension with additional tags (phone numbers, IBANs, and security style tokens) using straightforward regex patterns.
   - I then added small UX improvements: a richer stats panel that shows both totals and last submission counts, and a clear stats button so it is easy to reset and re exercise the system.
+  - I also added a light CI pipeline on GitHub Actions that builds the .NET solution, runs the tests, and builds the Next.js frontend so pull requests get clear build and test checkmarks.
 
 </details>
 
