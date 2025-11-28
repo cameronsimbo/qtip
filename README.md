@@ -113,6 +113,30 @@ Open `http://localhost:3000` in your browser.
 
 ---
 
+## How tokenisation works
+
+<details>
+<summary>How tokenisation works</summary>
+
+<br />
+
+- **Detect sensitive values in the text**
+  - When you submit text, the backend scans it with simple regex patterns to find emails, phone numbers, IBANs, and security-style tokens.
+  - For each match, it records what was found, where it appears, and which tag it belongs to (for example `"pii.email"`).
+
+- **Replace those values with tokens**
+  - The handler walks through the original text once from left to right.
+  - Each time it hits a detected value, it inserts a unique token (for example `{{TKN-1234}}`) instead of the real value, and builds a new “tokenised” version of the text.
+
+- **Store safe text and the mapping separately**
+  - The tokenised text is saved in the `Submission` entity (`TokenizedText` field).
+  - Each original value plus its token and tag is saved as a separate `ClassificationRecord`, linked back to the submission.
+  - This lets the app show and analyse tokenised text safely, while keeping the real sensitive values in a separate vault-like table.
+
+</details>
+
+---
+
 ## Trade offs and decisions made
 
 <details>
