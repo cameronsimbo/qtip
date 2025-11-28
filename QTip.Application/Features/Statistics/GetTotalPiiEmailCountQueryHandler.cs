@@ -26,5 +26,3 @@ public sealed class GetTotalPiiEmailCountQueryHandler
         return new GetTotalPiiEmailCountResult(count);
     }
 }
-
-

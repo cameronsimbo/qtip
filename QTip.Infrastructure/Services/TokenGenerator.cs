@@ -9,5 +9,3 @@ public sealed class TokenGenerator : ITokenGenerator
         return $"{{{{TKN-{Guid.NewGuid():N}}}}}";
     }
 }
-
-

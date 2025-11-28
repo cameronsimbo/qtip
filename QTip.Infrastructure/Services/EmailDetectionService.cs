@@ -22,7 +22,7 @@ public sealed class EmailDetectionService : IEmailDetectionService
 
         foreach (Match match in matches)
         {
-            if (!match.Success)
+            if (match.Success == false)
             {
                 continue;
             }
