@@ -1,12 +1,19 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 using QTip.Application.Abstractions;
 using QTip.Infrastructure.Services;
 
 namespace QTip.Tests;
 
-public class TokenGeneratorTests
+public class TokenGeneratorTests : TestBase
 {
-    private readonly ITokenGenerator _tokenGenerator = new TokenGenerator();
+    private readonly ITokenGenerator _tokenGenerator;
+
+    public TokenGeneratorTests()
+    {
+        ServiceProvider provider = CreateServiceProvider();
+        _tokenGenerator = provider.GetRequiredService<ITokenGenerator>();
+    }
 
     private static readonly Regex TokenPattern = new(
         pattern: @"^\{\{TKN-[0-9a-f]{32}\}\}$",

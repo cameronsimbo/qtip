@@ -1,11 +1,18 @@
+using Microsoft.Extensions.DependencyInjection;
 using QTip.Application.Abstractions;
 using QTip.Infrastructure.Services;
 
 namespace QTip.Tests;
 
-public class EmailDetectionServiceTests
+public class EmailDetectionServiceTests : TestBase
 {
-    private readonly IEmailDetectionService _service = new EmailDetectionService();
+    private readonly IEmailDetectionService _service;
+
+    public EmailDetectionServiceTests()
+    {
+        ServiceProvider provider = CreateServiceProvider();
+        _service = provider.GetRequiredService<IEmailDetectionService>();
+    }
 
     [Fact]
     public void Detect_ReturnsEmpty_WhenTextIsNullOrWhitespace()

@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using QTip.Application.Abstractions;
 using QTip.Application.Features.Submissions;
 using QTip.Domain.Entities;
@@ -8,7 +9,7 @@ using QTip.Infrastructure.Services;
 
 namespace QTip.Tests;
 
-public class SubmitTextCommandHandlerTests
+public class SubmitTextCommandHandlerTests : TestBase
 {
     private sealed class TestValidator : AbstractValidator<SubmitTextCommand>
     {
@@ -20,13 +21,20 @@ public class SubmitTextCommandHandlerTests
         }
     }
 
-    private static ApplicationDbContext CreateInMemoryDbContext()
+    private static ServiceProvider CreateHandlerServiceProvider()
     {
         DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        return new ApplicationDbContext(options);
+        ServiceProvider provider = CreateServiceProvider(services =>
+        {
+            services.AddSingleton(options);
+            services.AddDbContext<ApplicationDbContext>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            services.AddScoped<IValidator<SubmitTextCommand>, TestValidator>();
+        });
+        return provider;
     }
 
     [Fact]
@@ -34,13 +42,14 @@ public class SubmitTextCommandHandlerTests
     {
         const string originalText = "Hello john@example.com and jane@test.org.";
 
-        using ApplicationDbContext dbContext = CreateInMemoryDbContext();
+        using ServiceProvider provider = CreateHandlerServiceProvider();
 
+        ApplicationDbContext dbContext = provider.GetRequiredService<ApplicationDbContext>();
         SubmitTextCommandHandler handler = new SubmitTextCommandHandler(
-            dbContext,
-            new EmailDetectionService(),
-            new TokenGenerator(),
-            new TestValidator());
+            provider.GetRequiredService<IApplicationDbContext>(),
+            provider.GetRequiredService<IEmailDetectionService>(),
+            provider.GetRequiredService<ITokenGenerator>(),
+            provider.GetRequiredService<IValidator<SubmitTextCommand>>());
 
         SubmitTextCommand command = new SubmitTextCommand(originalText);
 
