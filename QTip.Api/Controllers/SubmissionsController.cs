@@ -1,23 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using QTip.Application.Features.Submissions;
+using QTip.Application.Features.Submissions.Models;
 
 namespace QTip.Api.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-public sealed class SubmissionsController : ControllerBase
+public sealed class SubmissionsController : BaseApiController
 {
-    private readonly IMediator _mediator;
-
     public SubmissionsController(IMediator mediator)
+        : base(mediator)
     {
-        _mediator = mediator;
-    }
-
-    public sealed class SubmitTextRequest
-    {
-        public string Text { get; set; } = string.Empty;
     }
 
     [HttpPost]
@@ -31,10 +24,8 @@ public sealed class SubmissionsController : ControllerBase
         }
 
         SubmitTextCommand command = new SubmitTextCommand(request.Text);
-        SubmitTextResult result = await _mediator.Send(command, cancellationToken);
+        SubmitTextResult result = await Mediator.Send(command, cancellationToken);
 
         return Ok(result);
     }
 }
-
-
