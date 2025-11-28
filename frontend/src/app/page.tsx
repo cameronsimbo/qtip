@@ -4,7 +4,10 @@ import { JSX, useCallback, useEffect, useMemo, useState } from "react";
 
 type SubmitResponse = {
   tokenizedText: string;
-  detectedEmailCount: number;
+  detectedPiiEmails: number;
+  detectedFinanceIbans: number;
+  detectedPiiPhones: number;
+  detectedSecurityTokens: number;
 };
 
 type StatsResponse = {
@@ -12,6 +15,10 @@ type StatsResponse = {
   totalFinanceIbans: number;
   totalPiiPhones: number;
   totalSecurityTokens: number;
+  lastSubmissionPiiEmails: number;
+  lastSubmissionFinanceIbans: number;
+  lastSubmissionPiiPhones: number;
+  lastSubmissionSecurityTokens: number;
 };
 
 type HighlightKind = "text" | "email" | "iban" | "phone" | "token";
@@ -173,6 +180,14 @@ export default function Home(): JSX.Element {
   const [totalPiiPhones, setTotalPiiPhones] = useState<number>(0);
   const [totalSecurityTokens, setTotalSecurityTokens] =
     useState<number>(0);
+  const [lastSubmissionPiiEmails, setLastSubmissionPiiEmails] =
+    useState<number>(0);
+  const [lastSubmissionFinanceIbans, setLastSubmissionFinanceIbans] =
+    useState<number>(0);
+  const [lastSubmissionPiiPhones, setLastSubmissionPiiPhones] =
+    useState<number>(0);
+  const [lastSubmissionSecurityTokens, setLastSubmissionSecurityTokens] =
+    useState<number>(0);
 
   const highlightedSegments = useMemo(() => buildHighlightSegments(text), [text]);
   const highlightedContent = useMemo(
@@ -195,6 +210,10 @@ export default function Home(): JSX.Element {
       setTotalFinanceIbans(data.totalFinanceIbans);
       setTotalPiiPhones(data.totalPiiPhones);
       setTotalSecurityTokens(data.totalSecurityTokens);
+      setLastSubmissionPiiEmails(data.lastSubmissionPiiEmails);
+      setLastSubmissionFinanceIbans(data.lastSubmissionFinanceIbans);
+      setLastSubmissionPiiPhones(data.lastSubmissionPiiPhones);
+      setLastSubmissionSecurityTokens(data.lastSubmissionSecurityTokens);
     } catch {
       // For this challenge, we silently ignore stats errors.
     }
@@ -228,11 +247,6 @@ export default function Home(): JSX.Element {
 
         const data: SubmitResponse = await response.json();
 
-        if (typeof data.detectedEmailCount === "number") {
-          // We keep the original text in the input; tokenized text is not shown
-          // because the challenge does not require it in the UI.
-        }
-
         await fetchStats();
       } catch {
         setSubmitError("An unexpected error occurred while submitting.");
@@ -242,6 +256,26 @@ export default function Home(): JSX.Element {
     },
     [fetchStats, text]
   );
+
+  const handleClear = useCallback(async () => {
+    setSubmitError(null);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/stats/clear`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorText = `Clear failed with status ${response.status}`;
+        setSubmitError(errorText);
+        return;
+      }
+
+      await fetchStats();
+    } catch {
+      setSubmitError("An unexpected error occurred while clearing stats.");
+    }
+  }, [fetchStats]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -283,6 +317,16 @@ export default function Home(): JSX.Element {
                 {isSubmitting ? "Submitting..." : "Submit Text"}
               </button>
 
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+                onClick={() => {
+                  void handleClear();
+                }}
+              >
+                Clear stats
+              </button>
+
               {submitError !== null ? (
                 <p className="text-sm text-red-600">{submitError}</p>
               ) : null}
@@ -291,7 +335,10 @@ export default function Home(): JSX.Element {
         </section>
 
         <section className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800">
-          <p>
+          <h2 className="text-sm font-semibold text-slate-900">
+            Totals (all submissions)
+          </h2>
+          <p className="mt-1">
             Total PII emails submitted:{" "}
             <span className="font-semibold">{totalPiiEmails}</span>
           </p>
@@ -307,6 +354,34 @@ export default function Home(): JSX.Element {
             Total security tokens detected:{" "}
             <span className="font-semibold">
               {totalSecurityTokens}
+            </span>
+          </p>
+
+          <h2 className="mt-4 text-sm font-semibold text-slate-900">
+            Most recent submission
+          </h2>
+          <p className="mt-1">
+            PII emails:{" "}
+            <span className="font-semibold">
+              {lastSubmissionPiiEmails}
+            </span>
+          </p>
+          <p className="mt-1">
+            Finance IBANs:{" "}
+            <span className="font-semibold">
+              {lastSubmissionFinanceIbans}
+            </span>
+          </p>
+          <p className="mt-1">
+            PII phone numbers:{" "}
+            <span className="font-semibold">
+              {lastSubmissionPiiPhones}
+            </span>
+          </p>
+          <p className="mt-1">
+            Security tokens:{" "}
+            <span className="font-semibold">
+              {lastSubmissionSecurityTokens}
             </span>
           </p>
         </section>

@@ -40,10 +40,45 @@ public sealed class GetTotalClassificationCountQueryHandler
             .Where(x => x.Tag == tokenTag)
             .LongCountAsync(cancellationToken);
 
+        Guid? lastSubmissionId = await _dbContext.Submissions
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Select(x => (Guid?)x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        long lastSubmissionPiiEmails = 0;
+        long lastSubmissionFinanceIbans = 0;
+        long lastSubmissionPiiPhones = 0;
+        long lastSubmissionSecurityTokens = 0;
+
+        if (lastSubmissionId.HasValue)
+        {
+            Guid submissionId = lastSubmissionId.Value;
+
+            lastSubmissionPiiEmails = await _dbContext.ClassificationRecords
+                .Where(x => x.SubmissionId == submissionId && x.Tag == emailTag)
+                .LongCountAsync(cancellationToken);
+
+            lastSubmissionFinanceIbans = await _dbContext.ClassificationRecords
+                .Where(x => x.SubmissionId == submissionId && x.Tag == ibanTag)
+                .LongCountAsync(cancellationToken);
+
+            lastSubmissionPiiPhones = await _dbContext.ClassificationRecords
+                .Where(x => x.SubmissionId == submissionId && x.Tag == phoneTag)
+                .LongCountAsync(cancellationToken);
+
+            lastSubmissionSecurityTokens = await _dbContext.ClassificationRecords
+                .Where(x => x.SubmissionId == submissionId && x.Tag == tokenTag)
+                .LongCountAsync(cancellationToken);
+        }
+
         return new GetTotalClassificationCountResult(
             totalPiiEmails,
             totalFinanceIbans,
             totalPiiPhones,
-            totalSecurityTokens);
+            totalSecurityTokens,
+            lastSubmissionPiiEmails,
+            lastSubmissionFinanceIbans,
+            lastSubmissionPiiPhones,
+            lastSubmissionSecurityTokens);
     }
 }

@@ -18,4 +18,11 @@ public sealed class StatsController : BaseApiController
         GetTotalClassificationCountResult result = await Mediator.Send(new GetTotalClassificationCountQuery(), cancellationToken);
         return Ok(result);
     }
+
+    [HttpPost("clear")]
+    public async Task<ActionResult<ClearClassificationCountsResult>> Clear(CancellationToken cancellationToken)
+    {
+        ClearClassificationCountsResult result = await Mediator.Send(new ClearClassificationCountsCommand(), cancellationToken);
+        return Ok(result);
+    }
 }

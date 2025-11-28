@@ -4,4 +4,9 @@ namespace QTip.Application.Features.Submissions;
 
 public sealed record SubmitTextCommand(string Text) : IRequest<SubmitTextResult>;
 
-public sealed record SubmitTextResult(string TokenizedText, int DetectedEmailCount);
+public sealed record SubmitTextResult(
+    string TokenizedText,
+    int DetectedPiiEmails,
+    int DetectedFinanceIbans,
+    int DetectedPiiPhones,
+    int DetectedSecurityTokens);

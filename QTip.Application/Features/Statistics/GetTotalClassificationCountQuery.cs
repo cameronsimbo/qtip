@@ -8,6 +8,9 @@ public sealed record GetTotalClassificationCountResult(
     long TotalPiiEmails,
     long TotalFinanceIbans,
     long TotalPiiPhones,
-    long TotalSecurityTokens);
-
+    long TotalSecurityTokens,
+    long LastSubmissionPiiEmails,
+    long LastSubmissionFinanceIbans,
+    long LastSubmissionPiiPhones,
+    long LastSubmissionSecurityTokens);
 

@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using QTip.Application.Abstractions;
 using QTip.Domain.Entities;
+using QTip.Domain.Enums;
 
 namespace QTip.Application.Features.Submissions;
 
@@ -95,7 +96,21 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return new SubmitTextResult(submission.TokenizedText, classificationRecords.Count);
+        int detectedPiiEmails = classificationRecords.Count(
+            record => record.Tag == PiiTag.PiiEmail.GetDescription());
+        int detectedFinanceIbans = classificationRecords.Count(
+            record => record.Tag == PiiTag.FinanceIban.GetDescription());
+        int detectedPiiPhones = classificationRecords.Count(
+            record => record.Tag == PiiTag.PiiPhone.GetDescription());
+        int detectedSecurityTokens = classificationRecords.Count(
+            record => record.Tag == PiiTag.SecurityToken.GetDescription());
+
+        return new SubmitTextResult(
+            submission.TokenizedText,
+            detectedPiiEmails,
+            detectedFinanceIbans,
+            detectedPiiPhones,
+            detectedSecurityTokens);
     }
 }
 

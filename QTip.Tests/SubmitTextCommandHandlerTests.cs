@@ -56,7 +56,7 @@ public class SubmitTextCommandHandlerTests : TestBase
 
         SubmitTextResult result = await handler.Handle(command, CancellationToken.None);
 
-        Assert.Equal(2, result.DetectedEmailCount);
+        Assert.Equal(2, result.DetectedPiiEmails);
         Assert.DoesNotContain("john@example.com", result.TokenizedText, StringComparison.Ordinal);
         Assert.DoesNotContain("jane@test.org", result.TokenizedText, StringComparison.Ordinal);
 
