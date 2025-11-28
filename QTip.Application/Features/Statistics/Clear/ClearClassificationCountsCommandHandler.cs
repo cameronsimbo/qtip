@@ -19,10 +19,8 @@ public sealed class ClearClassificationCountsCommandHandler
         ClearClassificationCountsCommand request,
         CancellationToken cancellationToken)
     {
-        List<ClassificationRecord> classifications =
-            await _dbContext.ClassificationRecords.ToListAsync(cancellationToken);
-        List<Submission> submissions =
-            await _dbContext.Submissions.ToListAsync(cancellationToken);
+        List<ClassificationRecord> classifications = await _dbContext.ClassificationRecords.ToListAsync(cancellationToken);
+        List<Submission> submissions = await _dbContext.Submissions.ToListAsync(cancellationToken);
 
         if (classifications.Count > 0)
         {

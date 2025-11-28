@@ -32,6 +32,7 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
 
         string text = request.Text;
 
+        // Detect all supported classifications in the raw text and order them by position.
         List<DetectedClassification> detectedClassifications = _classificationDetectionService
             .Detect(text)
             .OrderBy(x => x.StartIndex)
@@ -61,9 +62,11 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
             int lengthToCopy = classification.StartIndex - currentIndex;
             if (lengthToCopy > 0)
             {
+                // Copy the untouched segment between the last match and this match.
                 builder.Append(text.AsSpan(currentIndex, lengthToCopy));
             }
 
+            // Generate and insert a unique token for the matched sensitive value.
             string token = _tokenGenerator.GenerateToken();
             builder.Append(token);
 
@@ -82,6 +85,7 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
 
         if (currentIndex < text.Length)
         {
+            // Append any remaining text after the last match.
             builder.Append(text.AsSpan(currentIndex, text.Length - currentIndex));
         }
 
@@ -96,14 +100,10 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        int detectedPiiEmails = classificationRecords.Count(
-            record => record.Tag == PiiTag.PiiEmail.GetDescription());
-        int detectedFinanceIbans = classificationRecords.Count(
-            record => record.Tag == PiiTag.FinanceIban.GetDescription());
-        int detectedPiiPhones = classificationRecords.Count(
-            record => record.Tag == PiiTag.PiiPhone.GetDescription());
-        int detectedSecurityTokens = classificationRecords.Count(
-            record => record.Tag == PiiTag.SecurityToken.GetDescription());
+        int detectedPiiEmails = classificationRecords.Count(record => record.Tag == PiiTag.PiiEmail.GetDescription());
+        int detectedFinanceIbans = classificationRecords.Count(record => record.Tag == PiiTag.FinanceIban.GetDescription());
+        int detectedPiiPhones = classificationRecords.Count(record => record.Tag == PiiTag.PiiPhone.GetDescription());
+        int detectedSecurityTokens = classificationRecords.Count(record => record.Tag == PiiTag.SecurityToken.GetDescription());
 
         return new SubmitTextResult(
             submission.TokenizedText,

@@ -24,6 +24,7 @@ public sealed class GetClassificationCountQueryHandler
         string phoneTag = PiiTag.PiiPhone.GetDescription();
         string tokenTag = PiiTag.SecurityToken.GetDescription();
 
+        // Compute global totals for each classification tag across all submissions.
         long totalPiiEmails = await _dbContext.ClassificationRecords
             .Where(x => x.Tag == emailTag)
             .LongCountAsync(cancellationToken);
@@ -40,6 +41,7 @@ public sealed class GetClassificationCountQueryHandler
             .Where(x => x.Tag == tokenTag)
             .LongCountAsync(cancellationToken);
 
+        // Identify the most recent submission so we can compute "last submission" counts.
         Guid? lastSubmissionId = await _dbContext.Submissions
             .OrderByDescending(x => x.CreatedAtUtc)
             .Select(x => (Guid?)x.Id)

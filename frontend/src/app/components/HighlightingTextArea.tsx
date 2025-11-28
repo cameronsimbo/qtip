@@ -158,6 +158,8 @@ export function HighlightingTextArea(
 ): JSX.Element {
   const { value, onChange, placeholder } = props;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const isSyncingScrollRef = useRef<boolean>(false);
 
   const segments = useMemo(() => buildHighlightSegments(value), [value]);
   const highlightedContent = useMemo(
@@ -171,12 +173,42 @@ export function HighlightingTextArea(
     }
   };
 
+  const handleTextareaScroll = (): void => {
+    if (isSyncingScrollRef.current) {
+      return;
+    }
+
+    if (textareaRef.current === null || overlayRef.current === null) {
+      return;
+    }
+
+    isSyncingScrollRef.current = true;
+    overlayRef.current.scrollTop = textareaRef.current.scrollTop;
+    isSyncingScrollRef.current = false;
+  };
+
+  const handleOverlayScroll = (): void => {
+    if (isSyncingScrollRef.current) {
+      return;
+    }
+
+    if (textareaRef.current === null || overlayRef.current === null) {
+      return;
+    }
+
+    isSyncingScrollRef.current = true;
+    textareaRef.current.scrollTop = overlayRef.current.scrollTop;
+    isSyncingScrollRef.current = false;
+  };
+
   return (
     <div className="relative h-64 w-full">
       <div
         className="absolute inset-0 z-20 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm"
         aria-hidden="true"
         onClick={handleOverlayClick}
+        onScroll={handleOverlayScroll}
+        ref={overlayRef}
       >
         <div className="text-transparent">{highlightedContent}</div>
       </div>
@@ -186,6 +218,7 @@ export function HighlightingTextArea(
         ref={textareaRef}
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onScroll={handleTextareaScroll}
         placeholder={placeholder}
       />
     </div>
