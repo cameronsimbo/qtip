@@ -32,62 +32,90 @@ docker compose up --build
 
 <br />
 
-1. **Start PostgreSQL via Docker (once per session):**
+1. **Clone the repository**
 
 ```bash
-docker start qtip-db  # if it already exists
+git clone <your-fork-or-repo-url>
+cd qtip
 ```
 
-If the container does not exist yet:
+2. **Start PostgreSQL (via Docker)**
 
 ```bash
-docker run --name qtip-db -e POSTGRES_USER=qtip -e POSTGRES_PASSWORD=qtip -e POSTGRES_DB=qtip -p 5432:5432 -d postgres:16
+docker run --name qtip-db \
+  -e POSTGRES_USER=qtip \
+  -e POSTGRES_PASSWORD=qtip \
+  -e POSTGRES_DB=qtip \
+  -p 5432:5432 \
+  -d postgres:16
 ```
 
-2. **Run the API locally:**
-
-- `QTip.Api/appsettings.Development.json` contains:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=qtip;Username=qtip;Password=qtip"
-  }
-}
-```
-
-- From the repo root:
+3. **Run the backend**
 
 ```bash
 cd QTip.Api
 dotnet run
 ```
 
-- The API listens on `http://localhost:5001` (per `launchSettings.json`). Swagger is available at `http://localhost:5001/swagger`.
+The API listens on `http://localhost:5001`.
 
-3. **Run the frontend locally:**
+5. **Run the frontend**
 
-- In `frontend/.env.local`:
+Create or update `frontend/.env.local`:
 
 ```ini
 NEXT_PUBLIC_API_BASE_URL=http://localhost:5001
 ```
 
-- From the repo root:
+Then:
 
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
 ```
 
-- Open `http://localhost:3000` to use the app with full debugging support in your editor and browser dev tools.
+Open `http://localhost:3000` in your browser.
+
+</details>
+
+---
+
+## My Thought Process and How I Approach the Problem
+
+<details>
+<summary>My thought process and how I approached the problem</summary>
+
+<br />
+
+- **Bootstrap with AI for the heavy lifting**
+  - I used Cursor with ChatGPT 5.1 to generate the initial solution skeleton because the setup (four .NET projects, Next.js app, Docker, EF Core, MediatR, FluentValidation, PostgreSQL wiring) is boilerplate heavy and time consuming.
+  - AI helped me quickly wire up the core dependencies and project structure so I could spend more time on design, domain decisions, and polishing the implementation.
+
+- **Move into a test‑driven, iterative workflow**
+  - Once the skeleton was in place, I followed a test driven style of working: write small focused tests, make them pass, then refactor.
+  - I started with a simple email detection service, added tests early, and reused those tests as I refactored to catch regressions in the detection and tokenization pipeline.
+
+- **Evolve the design step by step**
+  - I iterated on the architecture by:
+    - Gradually reorganizing projects into `Domain`, `Application`, `Infrastructure`, and `Api`.
+    - Introducing abstractions (e.g., `IClassificationDetectionService`, `IApplicationDbContext`, `ITokenGenerator`) only when they simplified reasoning or testing.
+    - Refining logic in the MediatR handlers so that tokenization, persistence, and statistics were easy to understand and extend.
+
+- **Extend beyond email and polish the UX**
+  - After the email‑only version was stable, I implemented the optional extension with additional tags (phone numbers, IBANs, and security‑style tokens) using straightforward regex patterns.
+  - I then added small UX improvements: a richer stats panel that shows both totals and last submission counts, and a clear stats button so it is easy to reset and re exercise the system.
 
 </details>
 
 ---
 
 ## Trade‑offs and decisions made
+
+<details>
+<summary>Trade offs and decisions made</summary>
+
+<br />
 
 ### 1. EF Core code‑first with `EnsureCreated` (no migrations checked in)
 
@@ -105,3 +133,27 @@ npm run dev
 - **Decision**: Use simple regexes for email, IBAN, phone, and tokens instead of external libraries or strict format validators.  
 - **Reasoning**: Regex is sufficient here to demonstrate detection behavior and tokenization, and keeps the implementation easy to understand and adjust.  
 - **Trade‑off**: Patterns are deliberately simplified; they may miss some valid real‑world formats or match slightly more than a production grade validator would.
+
+</details>
+
+---
+
+## What I Would Do If I Had More Time
+
+<details>
+<summary>What I Would Do If I Had More Time</summary>
+
+<br />
+
+- **Add more tests**
+  - Increase coverage around edge cases in detection (spacing, punctuation, unusual but valid formats).
+
+- **Improve the UI layout and styling**
+
+- **Strengthen detection logic**
+  - Replace the basic regexes with more robust patterns or libraries, and tune them per tag type (emails, IBANs, phone numbers, security tokens) to reduce false positives and false negatives.
+
+- **Extend tags**
+  - Add more classification types as needed (e.g., national IDs).
+
+</details>
