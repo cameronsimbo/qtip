@@ -23,7 +23,7 @@ docker compose up --build
   - Backend API: exposed on `http://localhost:5000`
   - Frontend: exposed on `http://localhost:3000`
   - PostgreSQL database: internal service `db` on port `5432` with database `qtip`, user `qtip`, password `qtip`
-- Open the UI at `http://localhost:3000`, paste some text with emails, and submit. The stats panel will show `Total PII emails submitted: X` aggregated from the backend.
+- Open the UI at `http://localhost:3000`, paste some text that includes emails, phone numbers, IBANs, or security-style tokens, and submit. The stats panel will show aggregated counts for each type, and the input will underline different tags with different colours and tooltips (for example, emails vs phone numbers).
 
 **Troubleshooting port conflicts**: If you get "ports are not available" errors (e.g., port 5432 already in use):
 - Stop your local PostgreSQL service (`sudo systemctl stop postgresql` on Linux)
