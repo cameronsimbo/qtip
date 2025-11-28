@@ -3,20 +3,20 @@ using Microsoft.EntityFrameworkCore;
 using QTip.Application.Abstractions;
 using QTip.Domain.Enums;
 
-namespace QTip.Application.Features.Statistics;
+namespace QTip.Application.Features.Statistics.Get;
 
-public sealed class GetTotalClassificationCountQueryHandler
-    : IRequestHandler<GetTotalClassificationCountQuery, GetTotalClassificationCountResult>
+public sealed class GetClassificationCountQueryHandler
+    : IRequestHandler<GetClassificationCountQuery, GetClassificationCountResult>
 {
     private readonly IApplicationDbContext _dbContext;
 
-    public GetTotalClassificationCountQueryHandler(IApplicationDbContext dbContext)
+    public GetClassificationCountQueryHandler(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<GetTotalClassificationCountResult> Handle(
-        GetTotalClassificationCountQuery request,
+    public async Task<GetClassificationCountResult> Handle(
+        GetClassificationCountQuery request,
         CancellationToken cancellationToken)
     {
         string emailTag = PiiTag.PiiEmail.GetDescription();
@@ -71,7 +71,7 @@ public sealed class GetTotalClassificationCountQueryHandler
                 .LongCountAsync(cancellationToken);
         }
 
-        return new GetTotalClassificationCountResult(
+        return new GetClassificationCountResult(
             totalPiiEmails,
             totalFinanceIbans,
             totalPiiPhones,

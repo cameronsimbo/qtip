@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace QTip.Application.Features.Submissions;
+namespace QTip.Application.Features.Submissions.SubmitText;
 
 public sealed record SubmitTextCommand(string Text) : IRequest<SubmitTextResult>;
 

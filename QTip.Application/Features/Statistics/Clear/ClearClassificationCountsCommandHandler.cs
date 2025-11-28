@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QTip.Application.Abstractions;
 using QTip.Domain.Entities;
 
-namespace QTip.Application.Features.Statistics;
+namespace QTip.Application.Features.Statistics.Clear;
 
 public sealed class ClearClassificationCountsCommandHandler
     : IRequestHandler<ClearClassificationCountsCommand, ClearClassificationCountsResult>

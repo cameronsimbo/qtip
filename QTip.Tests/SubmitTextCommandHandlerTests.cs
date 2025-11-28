@@ -2,7 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QTip.Application.Abstractions;
-using QTip.Application.Features.Submissions;
+using QTip.Application.Features.Submissions.SubmitText;
 using QTip.Domain.Entities;
 using QTip.Infrastructure.Persistence;
 using QTip.Infrastructure.Services;

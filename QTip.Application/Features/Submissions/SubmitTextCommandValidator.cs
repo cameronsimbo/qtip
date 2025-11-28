@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace QTip.Application.Features.Submissions;
+namespace QTip.Application.Features.Submissions.SubmitText;
 
 public sealed class SubmitTextCommandValidator : AbstractValidator<SubmitTextCommand>
 {
@@ -13,5 +13,3 @@ public sealed class SubmitTextCommandValidator : AbstractValidator<SubmitTextCom
             .WithMessage("Text must not exceed 10000 characters.");
     }
 }
-
-

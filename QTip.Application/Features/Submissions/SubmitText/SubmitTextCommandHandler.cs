@@ -5,7 +5,7 @@ using QTip.Application.Abstractions;
 using QTip.Domain.Entities;
 using QTip.Domain.Enums;
 
-namespace QTip.Application.Features.Submissions;
+namespace QTip.Application.Features.Submissions.SubmitText;
 
 public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand, SubmitTextResult>
 {
@@ -113,5 +113,3 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
             detectedSecurityTokens);
     }
 }
-
-

@@ -178,16 +178,11 @@ export default function Home(): JSX.Element {
   const [totalPiiEmails, setTotalPiiEmails] = useState<number>(0);
   const [totalFinanceIbans, setTotalFinanceIbans] = useState<number>(0);
   const [totalPiiPhones, setTotalPiiPhones] = useState<number>(0);
-  const [totalSecurityTokens, setTotalSecurityTokens] =
-    useState<number>(0);
-  const [lastSubmissionPiiEmails, setLastSubmissionPiiEmails] =
-    useState<number>(0);
-  const [lastSubmissionFinanceIbans, setLastSubmissionFinanceIbans] =
-    useState<number>(0);
-  const [lastSubmissionPiiPhones, setLastSubmissionPiiPhones] =
-    useState<number>(0);
-  const [lastSubmissionSecurityTokens, setLastSubmissionSecurityTokens] =
-    useState<number>(0);
+  const [totalSecurityTokens, setTotalSecurityTokens] = useState<number>(0);
+  const [lastSubmissionPiiEmails, setLastSubmissionPiiEmails] = useState<number>(0);
+  const [lastSubmissionFinanceIbans, setLastSubmissionFinanceIbans] = useState<number>(0);
+  const [lastSubmissionPiiPhones, setLastSubmissionPiiPhones] = useState<number>(0);
+  const [lastSubmissionSecurityTokens, setLastSubmissionSecurityTokens] = useState<number>(0);
 
   const highlightedSegments = useMemo(() => buildHighlightSegments(text), [text]);
   const highlightedContent = useMemo(

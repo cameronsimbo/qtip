@@ -1,10 +1,10 @@
 using MediatR;
 
-namespace QTip.Application.Features.Statistics;
+namespace QTip.Application.Features.Statistics.Get;
 
-public sealed record GetTotalClassificationCountQuery : IRequest<GetTotalClassificationCountResult>;
+public sealed record GetClassificationCountQuery : IRequest<GetClassificationCountResult>;
 
-public sealed record GetTotalClassificationCountResult(
+public sealed record GetClassificationCountResult(
     long TotalPiiEmails,
     long TotalFinanceIbans,
     long TotalPiiPhones,

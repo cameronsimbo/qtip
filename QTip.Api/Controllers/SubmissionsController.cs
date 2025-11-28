@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using QTip.Application.Features.Submissions;
+using QTip.Application.Features.Submissions.SubmitText;
 
 namespace QTip.Api.Controllers;
 
