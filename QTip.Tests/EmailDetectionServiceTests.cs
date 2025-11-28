@@ -10,8 +10,8 @@ public class EmailDetectionServiceTests
     [Fact]
     public void Detect_ReturnsEmpty_WhenTextIsNullOrWhitespace()
     {
-        var resultEmpty = _service.Detect(string.Empty);
-        var resultWhitespace = _service.Detect("   ");
+        IReadOnlyList<DetectedEmail> resultEmpty = _service.Detect(string.Empty);
+        IReadOnlyList<DetectedEmail> resultWhitespace = _service.Detect("   ");
 
         Assert.Empty(resultEmpty);
         Assert.Empty(resultWhitespace);
@@ -22,10 +22,11 @@ public class EmailDetectionServiceTests
     {
         const string text = "Contact john.doe@example.com and jane@test.org for details.";
 
-        var result = _service.Detect(text);
+        IReadOnlyList<DetectedEmail> result = _service.Detect(text);
 
         Assert.Equal(2, result.Count);
         Assert.Equal("john.doe@example.com", result[0].Value);
         Assert.Equal("jane@test.org", result[1].Value);
     }
 }
+

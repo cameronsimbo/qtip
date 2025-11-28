@@ -22,7 +22,7 @@ public class SubmitTextCommandHandlerTests
 
     private static ApplicationDbContext CreateInMemoryDbContext()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
@@ -34,27 +34,27 @@ public class SubmitTextCommandHandlerTests
     {
         const string originalText = "Hello john@example.com and jane@test.org.";
 
-        using var dbContext = CreateInMemoryDbContext();
+        using ApplicationDbContext dbContext = CreateInMemoryDbContext();
 
-        var handler = new SubmitTextCommandHandler(
+        SubmitTextCommandHandler handler = new SubmitTextCommandHandler(
             dbContext,
             new EmailDetectionService(),
             new TokenGenerator(),
             new TestValidator());
 
-        var command = new SubmitTextCommand(originalText);
+        SubmitTextCommand command = new SubmitTextCommand(originalText);
 
-        var result = await handler.Handle(command, CancellationToken.None);
+        SubmitTextResult result = await handler.Handle(command, CancellationToken.None);
 
         Assert.Equal(2, result.DetectedEmailCount);
         Assert.DoesNotContain("john@example.com", result.TokenizedText, StringComparison.Ordinal);
         Assert.DoesNotContain("jane@test.org", result.TokenizedText, StringComparison.Ordinal);
 
-        var tokenCount = CountOccurrences(result.TokenizedText, "{{TKN-");
+        int tokenCount = CountOccurrences(result.TokenizedText, "{{TKN-");
         Assert.Equal(2, tokenCount);
 
-        var submissions = await dbContext.Submissions.ToListAsync();
-        var classifications = await dbContext.ClassificationRecords.ToListAsync();
+        List<Submission> submissions = await dbContext.Submissions.ToListAsync();
+        List<ClassificationRecord> classifications = await dbContext.ClassificationRecords.ToListAsync();
 
         Assert.Single(submissions);
         Assert.Equal(2, classifications.Count);
@@ -74,8 +74,8 @@ public class SubmitTextCommandHandlerTests
             return 0;
         }
 
-        var count = 0;
-        var index = 0;
+        int count = 0;
+        int index = 0;
 
         while (true)
         {

@@ -15,7 +15,7 @@ public class TokenGeneratorTests
     [Fact]
     public void GenerateToken_HasExpectedFormat()
     {
-        var token = _tokenGenerator.GenerateToken();
+        string token = _tokenGenerator.GenerateToken();
 
         Assert.Matches(TokenPattern, token);
     }
@@ -23,9 +23,10 @@ public class TokenGeneratorTests
     [Fact]
     public void GenerateToken_ProducesUniqueTokens()
     {
-        var first = _tokenGenerator.GenerateToken();
-        var second = _tokenGenerator.GenerateToken();
+        string first = _tokenGenerator.GenerateToken();
+        string second = _tokenGenerator.GenerateToken();
 
         Assert.NotEqual(first, second);
     }
 }
+

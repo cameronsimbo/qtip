@@ -1,4 +1,3 @@
-using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -7,7 +6,7 @@ using QTip.Application.Abstractions;
 using QTip.Infrastructure.Persistence;
 using QTip.Infrastructure.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -22,7 +21,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(IApplicationDbContext).Assembly);
 
 // DbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? builder.Configuration["QTIP_CONNECTION_STRING"]
                       ?? "Host=localhost;Port=5432;Database=qtip;Username=qtip;Password=qtip";
 
@@ -48,12 +47,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Ensure database is created with the current schema.
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
 }
 

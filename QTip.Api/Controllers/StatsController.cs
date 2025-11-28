@@ -23,9 +23,9 @@ public sealed class StatsController : ControllerBase
     [HttpGet("emails")]
     public async Task<ActionResult<TotalPiiEmailsResponse>> GetEmailStats(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetTotalPiiEmailCountQuery(), cancellationToken);
+        GetTotalPiiEmailCountResult result = await _mediator.Send(new GetTotalPiiEmailCountQuery(), cancellationToken);
 
-        var response = new TotalPiiEmailsResponse
+        TotalPiiEmailsResponse response = new TotalPiiEmailsResponse
         {
             TotalPiiEmails = result.TotalPiiEmails
         };

@@ -17,8 +17,8 @@ public sealed class EmailDetectionService : IEmailDetectionService
             return Array.Empty<DetectedEmail>();
         }
 
-        var matches = EmailRegex.Matches(text);
-        var results = new List<DetectedEmail>(matches.Count);
+        MatchCollection matches = EmailRegex.Matches(text);
+        List<DetectedEmail> results = new List<DetectedEmail>(matches.Count);
 
         foreach (Match match in matches)
         {

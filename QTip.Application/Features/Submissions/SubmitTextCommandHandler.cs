@@ -30,27 +30,27 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
     {
         await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var text = request.Text;
+        string text = request.Text;
 
-        var detectedEmails = _emailDetectionService
+        List<DetectedEmail> detectedEmails = _emailDetectionService
             .Detect(text)
             .OrderBy(x => x.StartIndex)
             .ToList();
 
-        var submissionId = Guid.NewGuid();
-        var submission = new Submission
+        Guid submissionId = Guid.NewGuid();
+        Submission submission = new Submission
         {
             Id = submissionId,
             TokenizedText = string.Empty,
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        var classificationRecords = new List<ClassificationRecord>(detectedEmails.Count);
+        List<ClassificationRecord> classificationRecords = new List<ClassificationRecord>(detectedEmails.Count);
 
-        var builder = new StringBuilder(text.Length);
-        var currentIndex = 0;
+        StringBuilder builder = new StringBuilder(text.Length);
+        int currentIndex = 0;
 
-        foreach (var email in detectedEmails)
+        foreach (DetectedEmail email in detectedEmails)
         {
             if (email.StartIndex < currentIndex)
             {
@@ -58,13 +58,13 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
                 continue;
             }
 
-            var lengthToCopy = email.StartIndex - currentIndex;
+            int lengthToCopy = email.StartIndex - currentIndex;
             if (lengthToCopy > 0)
             {
                 builder.Append(text.AsSpan(currentIndex, lengthToCopy));
             }
 
-            var token = _tokenGenerator.GenerateToken();
+            string token = _tokenGenerator.GenerateToken();
             builder.Append(token);
 
             classificationRecords.Add(new ClassificationRecord

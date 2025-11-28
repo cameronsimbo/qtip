@@ -19,7 +19,7 @@ public sealed class GetTotalPiiEmailCountQueryHandler
         GetTotalPiiEmailCountQuery request,
         CancellationToken cancellationToken)
     {
-        var count = await _dbContext.ClassificationRecords
+        long count = await _dbContext.ClassificationRecords
             .Where(x => x.Tag == PiiTags.PiiEmailTag)
             .LongCountAsync(cancellationToken);
 

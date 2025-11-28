@@ -30,8 +30,8 @@ public sealed class SubmissionsController : ControllerBase
             return BadRequest(new { Message = "Request body is required." });
         }
 
-        var command = new SubmitTextCommand(request.Text);
-        var result = await _mediator.Send(command, cancellationToken);
+        SubmitTextCommand command = new SubmitTextCommand(request.Text);
+        SubmitTextResult result = await _mediator.Send(command, cancellationToken);
 
         return Ok(result);
     }
