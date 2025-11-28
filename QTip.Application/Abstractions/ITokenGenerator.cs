@@ -8,5 +8,3 @@ public interface ITokenGenerator
     /// <returns>A unique token string.</returns>
     string GenerateToken();
 }
-
-
