@@ -139,7 +139,7 @@ export default function Home(): JSX.Element {
             <HighlightingTextArea
               value={text}
               onChange={setText}
-              placeholder="Type or paste text containing email addresses..."
+              placeholder="Type or paste text..."
             />
 
             <div className="flex items-center gap-4">
