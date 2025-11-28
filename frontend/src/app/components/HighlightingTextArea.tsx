@@ -144,7 +144,11 @@ function renderSegments(segments: HighlightSegment[]): JSX.Element[] {
     const title = titleByKind[kind];
 
     elements.push(
-      <span key={`${keyPrefix}${kind}`} className={style} title={title}>
+      <span
+        key={`${keyPrefix}${kind}`}
+        className={`${style} pointer-events-auto`}
+        title={title}
+      >
         {segment.value}
       </span>
     );
@@ -167,12 +171,6 @@ export function HighlightingTextArea(
     [segments],
   );
 
-  const handleOverlayClick = (): void => {
-    if (textareaRef.current !== null) {
-      textareaRef.current.focus();
-    }
-  };
-
   const handleTextareaScroll = (): void => {
     if (isSyncingScrollRef.current) {
       return;
@@ -187,27 +185,11 @@ export function HighlightingTextArea(
     isSyncingScrollRef.current = false;
   };
 
-  const handleOverlayScroll = (): void => {
-    if (isSyncingScrollRef.current) {
-      return;
-    }
-
-    if (textareaRef.current === null || overlayRef.current === null) {
-      return;
-    }
-
-    isSyncingScrollRef.current = true;
-    textareaRef.current.scrollTop = overlayRef.current.scrollTop;
-    isSyncingScrollRef.current = false;
-  };
-
   return (
     <div className="relative h-64 w-full">
       <div
-        className="absolute inset-0 z-20 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm"
+        className="pointer-events-none absolute inset-0 z-20 overflow-auto whitespace-pre-wrap rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm"
         aria-hidden="true"
-        onClick={handleOverlayClick}
-        onScroll={handleOverlayScroll}
         ref={overlayRef}
       >
         <div className="text-transparent">{highlightedContent}</div>
