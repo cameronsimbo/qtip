@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using QTip.Application.Features.Submissions;
-using QTip.Application.Features.Submissions.Models;
 
 namespace QTip.Api.Controllers;
 
@@ -15,15 +14,9 @@ public sealed class SubmissionsController : BaseApiController
 
     [HttpPost]
     public async Task<ActionResult<SubmitTextResult>> Submit(
-        [FromBody] SubmitTextRequest request,
+        [FromBody] SubmitTextCommand command,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest(new { Message = "Request body is required." });
-        }
-
-        SubmitTextCommand command = new SubmitTextCommand(request.Text);
         SubmitTextResult result = await Mediator.Send(command, cancellationToken);
 
         return Ok(result);

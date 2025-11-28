@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using QTip.Application.Features.Statistics;
-using QTip.Application.Features.Statistics.Models;
 
 namespace QTip.Api.Controllers;
 
@@ -14,15 +13,9 @@ public sealed class StatsController : BaseApiController
     }
 
     [HttpGet("emails")]
-    public async Task<ActionResult<TotalPiiEmailsResponse>> GetEmailStats(CancellationToken cancellationToken)
+    public async Task<ActionResult<GetTotalPiiEmailCountResult>> GetEmailStats(CancellationToken cancellationToken)
     {
         GetTotalPiiEmailCountResult result = await Mediator.Send(new GetTotalPiiEmailCountQuery(), cancellationToken);
-
-        TotalPiiEmailsResponse response = new TotalPiiEmailsResponse
-        {
-            TotalPiiEmails = result.TotalPiiEmails
-        };
-
-        return Ok(response);
+        return Ok(result);
     }
 }
