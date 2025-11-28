@@ -13,9 +13,9 @@ public sealed class StatsController : BaseApiController
     }
 
     [HttpGet("emails")]
-    public async Task<ActionResult<GetTotalPiiEmailCountResult>> GetEmailStats(CancellationToken cancellationToken)
+    public async Task<ActionResult<GetTotalClassificationCountResult>> GetEmailStats(CancellationToken cancellationToken)
     {
-        GetTotalPiiEmailCountResult result = await Mediator.Send(new GetTotalPiiEmailCountQuery(), cancellationToken);
+        GetTotalClassificationCountResult result = await Mediator.Send(new GetTotalClassificationCountQuery(), cancellationToken);
         return Ok(result);
     }
 }

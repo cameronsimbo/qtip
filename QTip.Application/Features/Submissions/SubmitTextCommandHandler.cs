@@ -3,25 +3,24 @@ using FluentValidation;
 using MediatR;
 using QTip.Application.Abstractions;
 using QTip.Domain.Entities;
-using QTip.Domain.Enums;
 
 namespace QTip.Application.Features.Submissions;
 
 public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand, SubmitTextResult>
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly IEmailDetectionService _emailDetectionService;
+    private readonly IClassificationDetectionService _classificationDetectionService;
     private readonly ITokenGenerator _tokenGenerator;
     private readonly IValidator<SubmitTextCommand> _validator;
 
     public SubmitTextCommandHandler(
         IApplicationDbContext dbContext,
-        IEmailDetectionService emailDetectionService,
+        IClassificationDetectionService classificationDetectionService,
         ITokenGenerator tokenGenerator,
         IValidator<SubmitTextCommand> validator)
     {
         _dbContext = dbContext;
-        _emailDetectionService = emailDetectionService;
+        _classificationDetectionService = classificationDetectionService;
         _tokenGenerator = tokenGenerator;
         _validator = validator;
     }
@@ -32,7 +31,7 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
 
         string text = request.Text;
 
-        List<DetectedEmail> detectedEmails = _emailDetectionService
+        List<DetectedClassification> detectedClassifications = _classificationDetectionService
             .Detect(text)
             .OrderBy(x => x.StartIndex)
             .ToList();
@@ -45,20 +44,20 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        List<ClassificationRecord> classificationRecords = new List<ClassificationRecord>(detectedEmails.Count);
+        List<ClassificationRecord> classificationRecords = new List<ClassificationRecord>(detectedClassifications.Count);
 
         StringBuilder builder = new StringBuilder(text.Length);
         int currentIndex = 0;
 
-        foreach (DetectedEmail email in detectedEmails)
+        foreach (DetectedClassification classification in detectedClassifications)
         {
-            if (email.StartIndex < currentIndex)
+            if (classification.StartIndex < currentIndex)
             {
                 // Skip overlapping or invalid match to avoid corrupting output.
                 continue;
             }
 
-            int lengthToCopy = email.StartIndex - currentIndex;
+            int lengthToCopy = classification.StartIndex - currentIndex;
             if (lengthToCopy > 0)
             {
                 builder.Append(text.AsSpan(currentIndex, lengthToCopy));
@@ -72,12 +71,12 @@ public sealed class SubmitTextCommandHandler : IRequestHandler<SubmitTextCommand
                 Id = Guid.NewGuid(),
                 SubmissionId = submissionId,
                 Token = token,
-                OriginalValue = email.Value,
-                Tag = PiiTag.PiiEmail.GetDescription(),
+                OriginalValue = classification.Value,
+                Tag = classification.Tag,
                 CreatedAtUtc = DateTime.UtcNow
             });
 
-            currentIndex = email.StartIndex + email.Length;
+            currentIndex = classification.StartIndex + classification.Length;
         }
 
         if (currentIndex < text.Length)

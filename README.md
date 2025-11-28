@@ -87,7 +87,7 @@ npm run dev
 
 ---
 
-## Trade‑offs or shortcuts taken
+## Trade‑offs and decisions made
 
 ### 1. EF Core code‑first with `EnsureCreated` (no migrations checked in)
 
@@ -95,8 +95,13 @@ npm run dev
 - **Reasoning**: For a small challenge with a simple schema, this keeps setup and maintenance very light while still giving a real relational database and clear schema.  
 - **Trade‑off**: This approach is not ideal for production schema evolution, but it is acceptable  for this tech test.
 
-### 2. Regex‑based email detection
+### 2. From email‑only detection to a generalized classification service
 
-- **Decision**: Use a single email regex instead of more external libraries.  
-- **Reasoning**: Regex is sufficient for this challenge to detect typical email patterns in text and maintain a simple implementation.  
-- **Trade‑off**: Some edge‑case email formats may not be caught but the behavior is predictable and easy to understand.
+- **Decision**: Start with a dedicated `IEmailDetectionService` and later evolve to a single `IClassificationDetectionService` that detects multiple configured types (email, IBAN, phone, tokens) using regex patterns and enum‑backed tags.  
+- **Reasoning**: Beginning with email only kept the initial pipeline simple and easy to validate; once that was correct, it was generalized to support additional classification types without changing the controller or command.
+
+### 3. Regex‑based detection for all types
+
+- **Decision**: Use simple regexes for email, IBAN, phone, and tokens instead of external libraries or strict format validators.  
+- **Reasoning**: Regex is sufficient here to demonstrate detection behavior and tokenization, and keeps the implementation easy to understand and adjust.  
+- **Trade‑off**: Patterns are deliberately simplified; they may miss some valid real‑world formats or match slightly more than a production grade validator would.

@@ -33,7 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
 // Application services
-builder.Services.AddScoped<IEmailDetectionService, EmailDetectionService>();
+builder.Services.AddScoped<IClassificationDetectionService, ClassificationDetectionService>();
 builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 
 // CORS - relaxed for this challenge; can be tightened with specific origin later.

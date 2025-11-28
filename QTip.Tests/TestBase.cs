@@ -11,7 +11,7 @@ public abstract class TestBase
     {
         ServiceCollection services = new ServiceCollection();
 
-        services.AddScoped<IEmailDetectionService, EmailDetectionService>();
+        services.AddScoped<IClassificationDetectionService, ClassificationDetectionService>();
         services.AddScoped<ITokenGenerator, TokenGenerator>();
 
         if (configureServices is not null)

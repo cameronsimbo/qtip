@@ -33,6 +33,7 @@ public class SubmitTextCommandHandlerTests : TestBase
             services.AddDbContext<ApplicationDbContext>();
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<IValidator<SubmitTextCommand>, TestValidator>();
+            services.AddScoped<IClassificationDetectionService, ClassificationDetectionService>();
         });
         return provider;
     }
@@ -47,7 +48,7 @@ public class SubmitTextCommandHandlerTests : TestBase
         ApplicationDbContext dbContext = provider.GetRequiredService<ApplicationDbContext>();
         SubmitTextCommandHandler handler = new SubmitTextCommandHandler(
             provider.GetRequiredService<IApplicationDbContext>(),
-            provider.GetRequiredService<IEmailDetectionService>(),
+            provider.GetRequiredService<IClassificationDetectionService>(),
             provider.GetRequiredService<ITokenGenerator>(),
             provider.GetRequiredService<IValidator<SubmitTextCommand>>());
 
